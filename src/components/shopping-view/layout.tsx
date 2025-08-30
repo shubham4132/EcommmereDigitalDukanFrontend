@@ -1,13 +1,14 @@
 import { Outlet } from "react-router";
+import ShoppingHeader from "./header";
 
-function ShoppingLayOut() {
+function ShoppingLayout() {
   return (
-    <div>
-      ShopLayout
-      <main>
+    <div className="flex flex-col bg-white overflow-hidden">
+      <ShoppingHeader />
+      <main className="flex flex-col w-full">
         <Outlet />
       </main>
     </div>
   );
 }
-export default ShoppingLayOut;
+export default ShoppingLayout;

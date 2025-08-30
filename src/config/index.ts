@@ -74,7 +74,7 @@ export const addProductFormElements = [
     options: [
       { id: "earphone", label: "Earphone" },
       { id: "mobile", label: "Mobile" },
-      { id: "watches", label: "Watches" },
+      { id: "watch", label: "Watch" },
       { id: "television", label: "Television" },
       { id: "laptop", label: "Laptop" },
     ],
@@ -113,4 +113,80 @@ export const addProductFormElements = [
     type: "number",
     placeholder: "Enter total stock",
   },
+];
+
+export const shoppingViewHeaderMenuItems = [
+  {
+    id: "home",
+    label: "Home",
+    path: "/shop/home",
+  },
+  {
+    id: "products",
+    label: "Products",
+    path: "/shop/listing",
+  },
+  {
+    id: "earphone",
+    label: "EarPhone",
+    path: "/shop/listing",
+  },
+  {
+    id: "mobile",
+    label: "Mobile",
+    path: "/shop/listing",
+  },
+  {
+    id: "watch",
+    label: "Watch",
+    path: "/shop/listing",
+  },
+  {
+    id: "television",
+    label: "television",
+    path: "/shop/listing",
+  },
+  {
+    id: "laptop",
+    label: "Laptop",
+    path: "/shop/listing",
+  },
+  // {
+  //   id: "search",
+  //   label: "Search",
+  //   path: "/shop/search",
+  // },
+];
+export type FilterOptionItem = {
+  id: string;
+  label: string;
+};
+export type FilterOptions = {
+  category: FilterOptionItem[];
+  brand: FilterOptionItem[];
+};
+
+export const filterOptions: FilterOptions = {
+  category: [
+    { id: "earphone", label: "Earphone" },
+    { id: "mobile", label: "Mobile" },
+    { id: "watch", label: "Watch" },
+    { id: "television", label: "Television" },
+    { id: "laptop", label: "Laptop" },
+  ],
+  brand: [
+    { id: "sony", label: "Sony" },
+    { id: "jbl", label: "Jbl" },
+    { id: "oneplus", label: "OnePlus" },
+    { id: "apple", label: "Apple" },
+    { id: "samsung", label: "Samsung" },
+    { id: "panasonic", label: "Panasonic" },
+  ],
+};
+
+export const sortOptions = [
+  { id: "price-lowtohigh", label: "Price: Low to High" },
+  { id: "price-hightolow", label: "Price: High to Low" },
+  { id: "title-atoz", label: "Title: A to Z" },
+  { id: "title-ztoa", label: "Title: Z to A" },
 ];
