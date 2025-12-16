@@ -1,4 +1,5 @@
 import { sortOptions } from "@/config";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import {
   fetchAllFilteredProducts,
   fetchProductDetails,
@@ -20,6 +21,7 @@ import { ArrowUpDownIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useSearchParams } from "react-router";
+import { toast } from "sonner";
 
 type FilterState = {
   [key: string]: string[];
@@ -42,6 +44,9 @@ function ShoppingListing() {
   const { productList, productDetails } = useSelector(
     (state: RootState) => state.shopProducts
   );
+
+  const { cartItems } = useSelector((state) => state.shopCart);
+  const { user } = useSelector((state) => state.auth);
   const [filters, setFilters] = useState<FilterState>({});
   const [sort, setSort] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -71,6 +76,34 @@ function ShoppingListing() {
     console.log(getCurrentProductId);
     dispatch(fetchProductDetails(getCurrentProductId));
     // setOpenDetailsDialog(true);
+  }
+  function handleAddtoCart(getCurrentProductId, getTotalStock) {
+    let getCartItems = cartItems.items || [];
+    if (getCartItems.length) {
+      const indexOfCurrentItem = getCartItems.findIndex(
+        (item) => item.productId === getCurrentProductId
+      );
+      if (indexOfCurrentItem > -1) {
+        const getQuantity = getCartItems[indexOfCurrentItem].quantity;
+        if (getQuantity + 1 > getTotalStock) {
+          toast(`Only ${getQuantity} quantity can be added for this item`);
+
+          return;
+        }
+      }
+    }
+    dispatch(
+      addToCart({
+        userId: user?.id,
+        productId: getCurrentProductId,
+        quantity: 1,
+      })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast(`Product is added to cart`);
+      }
+    });
   }
 
   useEffect(() => {
@@ -143,6 +176,7 @@ function ShoppingListing() {
                 <ShoppingProductTile
                   product={productItem}
                   handleGetProductDetails={handleGetProductDetails}
+                  handleAddtoCart={handleAddtoCart}
                 />
               ))
             : null}

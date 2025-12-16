@@ -15,11 +15,21 @@ import { Sheet, SheetContent, SheetTrigger } from "components/ui/sheet";
 import { HousePlug, LogOut, Menu, ShoppingCart, UserCog } from "lucide-react";
 import { Link, useNavigate } from "react-router";
 import UserCartWrapper from "./cart-wrapper";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchCartItems } from "@/store/shop/cart-slice";
+import { logoutUser } from "@/store/auth-slice";
 function MenuItems() {
   const navigate = useNavigate();
   function handleNavigate(getCurrentMenuItem) {
-    console.log(getCurrentMenuItem);
+    sessionStorage.removeItem("filters");
+    const currentFilter =
+      getCurrentMenuItem.id !== "home"
+        ? {
+            category: [getCurrentMenuItem.id],
+          }
+        : null;
+    sessionStorage.setItem("filters", JSON.stringify(currentFilter));
     navigate(getCurrentMenuItem.path);
   }
   return (
@@ -38,7 +48,20 @@ function MenuItems() {
 }
 
 function HeaderRightContent() {
+  const { user } = useSelector((state) => state.auth);
+  const { cartItems } = useSelector((state) => state.shopCart);
   const [openCartSheet, setOpenCartSheet] = useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  function handleLogout() {
+    dispatch(logoutUser());
+  }
+
+  useEffect(() => {
+    dispatch(fetchCartItems(user?.id));
+  }, [dispatch]);
+
   return (
     <div className="flex lg:items-center lg:flex-row flex-col gap-4">
       <Sheet open={openCartSheet} onOpenChange={() => setOpenCartSheet(false)}>
@@ -50,7 +73,14 @@ function HeaderRightContent() {
           <ShoppingCart className="w-6 h-6" />
           <span className="sr-only">User cart</span>
         </Button>
-        <UserCartWrapper />
+        <UserCartWrapper
+          setOpenCartSheet={setOpenCartSheet}
+          cartItems={
+            cartItems && cartItems.items && cartItems.items.length > 0
+              ? cartItems.items
+              : []
+          }
+        />
       </Sheet>
 
       <DropdownMenu>
@@ -64,12 +94,12 @@ function HeaderRightContent() {
         <DropdownMenuContent side="right" className="w-56">
           <DropdownMenuLabel>Logged in as Shubham Goswami</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={() => navigate("/shop/account")}>
             <UserCog className="mr-2 h-4 w-4" />
             Account
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuItem onClick={handleLogout}>
             <LogOut className="mr-2 h-4 w-4" />
             Logout
           </DropdownMenuItem>

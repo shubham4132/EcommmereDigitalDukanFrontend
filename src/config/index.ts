@@ -90,6 +90,7 @@ export const addProductFormElements = [
       { id: "apple", label: "Apple" },
       { id: "samsung", label: "Samsung" },
       { id: "panasonic", label: "Panasonic" },
+      { id: "nothingphone", label: "Nothing Phone" },
     ],
   },
   {
@@ -181,6 +182,7 @@ export const filterOptions: FilterOptions = {
     { id: "apple", label: "Apple" },
     { id: "samsung", label: "Samsung" },
     { id: "panasonic", label: "Panasonic" },
+    { id: "nothing", label: "Nothing Phone" },
   ],
 };
 
@@ -189,4 +191,41 @@ export const sortOptions = [
   { id: "price-hightolow", label: "Price: High to Low" },
   { id: "title-atoz", label: "Title: A to Z" },
   { id: "title-ztoa", label: "Title: Z to A" },
+];
+
+export const addressFormControls = [
+  {
+    label: "Address",
+    name: "address",
+    componentType: "input",
+    type: "text",
+    placeholder: "Enter your address",
+  },
+  {
+    label: "City",
+    name: "city",
+    componentType: "input",
+    type: "text",
+    placeholder: "Enter your city",
+  },
+  {
+    label: "Pincode",
+    name: "pincode",
+    componentType: "input",
+    type: "text",
+    placeholder: "Enter your pincode",
+  },
+  {
+    label: "Phone",
+    name: "phone",
+    componentType: "input",
+    type: "text",
+    placeholder: "Enter your phone number",
+  },
+  {
+    label: "Notes",
+    name: "notes",
+    componentType: "textarea",
+    placeholder: "Enter any additional notes",
+  },
 ];

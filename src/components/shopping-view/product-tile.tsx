@@ -1,7 +1,11 @@
 import { Button } from "components/ui/button";
 import { Card, CardContent, CardFooter } from "components/ui/card";
 
-function ShoppingProductTile({ product, handleGetProductDetails }) {
+function ShoppingProductTile({
+  product,
+  handleGetProductDetails,
+  handleAddtoCart,
+}) {
   return (
     <Card className="w-full max-w-sm mx-auto">
       <div onClick={() => handleGetProductDetails(product?._id)}>
@@ -39,13 +43,12 @@ function ShoppingProductTile({ product, handleGetProductDetails }) {
         </CardContent>
       </div>
       <CardFooter>
-        {product?.totalStock === 0 ? (
-          <Button className="w-full opacity-65 cursor-not-allowed">
-            Out Of Stock
-          </Button>
-        ) : (
-          <Button className="w-full">Add to cart</Button>
-        )}
+        <Button
+          onClick={() => handleAddtoCart(product?._id, product?.totalStock)}
+          className="w-full"
+        >
+          Add to cart
+        </Button>
       </CardFooter>
     </Card>
   );
