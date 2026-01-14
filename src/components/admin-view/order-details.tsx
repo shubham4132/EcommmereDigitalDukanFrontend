@@ -1,19 +1,38 @@
+import {
+  getAllOrdersForAdmin,
+  getOrderDetailsForAdmin,
+  updateOrderStatus,
+} from "@/store/admin/order-slice";
 import CommonForm from "components/common/form";
 import { Badge } from "components/ui/badge";
 import { DialogContent } from "components/ui/dialog";
 import { Label } from "components/ui/label";
 import { Separator } from "components/ui/separator";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 const initialFormData = {
   status: "",
 };
 
-function AdminOrderDetailsView() {
+function AdminOrderDetailsView({ orderDetails }) {
   const [formData, setFormData] = useState(initialFormData);
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
 
   function handleUpdateStatus(event) {
     event.preventDefault();
+    const { status } = formData;
+    dispatch(
+      updateOrderStatus({ id: orderDetails?._id, orderStatus: status })
+    ).then((data) => {
+      if (data?.payload?.success) {
+        console.log(data, "data");
+        dispatch(getOrderDetailsForAdmin(orderDetails?._id));
+        dispatch(getAllOrdersForAdmin());
+        setFormData(initialFormData);
+      }
+    });
   }
   return (
     <DialogContent className="sm:max-w-[600px]">
@@ -21,28 +40,38 @@ function AdminOrderDetailsView() {
         <div className="grid gap-2">
           <div className="flex mt-6 items-center justify-between">
             <p className="font-medium">Order ID</p>
-            <Label>1234</Label>
+            <Label>{orderDetails?._id}</Label>
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Order Date</p>
-            <Label>18/11/25</Label>
+            <Label>{orderDetails?.orderDate?.split("T")[0]}</Label>
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Order Price</p>
-            <Label>$1000</Label>
+            <Label>${orderDetails?.totalAmount}</Label>
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Payment method</p>
-            <Label>paypal</Label>
+            <Label>{orderDetails?.paymentMethod}</Label>
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Payment Status</p>
-            <Label>pending</Label>
+            <Label>{orderDetails?.paymentStatus}</Label>
           </div>
           <div className="flex mt-2 items-center justify-between">
             <p className="font-medium">Order Status</p>
             <Label>
-              <Badge>pending</Badge>
+              <Badge
+                className={`py-1 px-3 ${
+                  orderDetails?.orderStatus === "confirmed"
+                    ? "bg-green-500"
+                    : orderDetails?.orderStatus === "rejected"
+                    ? "bg-red-500"
+                    : "bg-black"
+                }`}
+              >
+                {orderDetails?.orderStatus}
+              </Badge>
             </Label>
           </div>
         </div>
@@ -50,18 +79,32 @@ function AdminOrderDetailsView() {
         <div className="grid gap-4">
           <div className="grid gap-2">
             <div className="font-medium">Order Details</div>
+            <ul className="grid gap-3">
+              {orderDetails?.cartItems && orderDetails?.cartItems.length > 0
+                ? orderDetails?.cartItems.map((item) => (
+                    <li
+                      key={item.title}
+                      className="flex items-center justify-between"
+                    >
+                      <span>Title: {item.title}</span>
+                      <span>Quantity: {item.quantity}</span>
+                      <span>Price: ${item.price}</span>
+                    </li>
+                  ))
+                : null}
+            </ul>
           </div>
         </div>
         <div className="grid gap-4">
           <div className="grid gap-2">
             <div className="font-medium">Shipping Info</div>
             <div className="grid gap-0.5 text-muted-foreground">
-              <span>Shubham Goswami</span>
-              <span>Dekuli dharampur</span>
-              <span>sheohar</span>
-              <span>843329</span>
-              <span>8754254887</span>
-              <span>notes</span>
+              <span>{user?.userName}</span>
+              <span>{orderDetails?.addressInfo?.address}</span>
+              <span>{orderDetails?.addressInfo?.city}</span>
+              <span>{orderDetails?.addressInfo?.pincode}</span>
+              <span>{orderDetails?.addressInfo?.phone}</span>
+              <span>{orderDetails?.addressInfo?.notes}</span>
             </div>
           </div>
         </div>
