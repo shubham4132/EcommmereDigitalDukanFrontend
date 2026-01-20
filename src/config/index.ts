@@ -152,11 +152,11 @@ export const shoppingViewHeaderMenuItems = [
     label: "Laptop",
     path: "/shop/listing",
   },
-  // {
-  //   id: "search",
-  //   label: "Search",
-  //   path: "/shop/search",
-  // },
+  {
+    id: "search",
+    label: "Search",
+    path: "/shop/search",
+  },
 ];
 export type FilterOptionItem = {
   id: string;

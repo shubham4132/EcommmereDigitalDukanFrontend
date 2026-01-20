@@ -47,10 +47,12 @@ function ShoppingListing() {
 
   const { cartItems } = useSelector((state) => state.shopCart);
   const { user } = useSelector((state) => state.auth);
-  const [filters, setFilters] = useState<FilterState>({});
+  const [filters, setFilters] = useState<FilterState>(null);
   const [sort, setSort] = useState<string | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const [openDetailsDialog, setOpenDetailsDialog] = useState(false);
+  const categorySearchParam = searchParams.get("category");
+
   function handleSort(value) {
     setSort(value);
     console.log(value);
@@ -77,17 +79,20 @@ function ShoppingListing() {
     dispatch(fetchProductDetails(getCurrentProductId));
     // setOpenDetailsDialog(true);
   }
+
   function handleAddtoCart(getCurrentProductId, getTotalStock) {
-    let getCartItems = cartItems.items || [];
+    console.log(getCurrentProductId, getTotalStock, "checking");
+    const getCartItems = cartItems.items || [];
     if (getCartItems.length) {
       const indexOfCurrentItem = getCartItems.findIndex(
-        (item) => item.productId === getCurrentProductId
+        (item) => item.productId.toString() === getCurrentProductId.toString()
       );
       if (indexOfCurrentItem > -1) {
         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
         if (getQuantity + 1 > getTotalStock) {
-          toast(`Only ${getQuantity} quantity can be added for this item`);
-
+          toast.error(
+            `Only ${getQuantity} quantity can be added for this item`
+          );
           return;
         }
       }
@@ -114,7 +119,7 @@ function ShoppingListing() {
       const parsedFilters = JSON.parse(storedFilters);
       setFilters(parsedFilters);
     }
-  }, []);
+  }, [categorySearchParam]);
 
   useEffect(() => {
     if (filters && Object.keys(filters).length > 0) {

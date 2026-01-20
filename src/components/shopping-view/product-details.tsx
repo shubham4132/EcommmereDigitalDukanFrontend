@@ -7,18 +7,19 @@ import { Input } from "../ui/input";
 import { useDispatch, useSelector } from "react-redux";
 
 import { setProductDetails } from "@/store/shop/products-slice";
-import { addToCart } from "@/store/shop/cart-slice";
+import { addToCart, fetchCartItems } from "@/store/shop/cart-slice";
 import { toast } from "sonner";
 
 function ProductDetailsDialog({ open, setOpen, productDetails }) {
   const dispatch = useDispatch();
   const { user } = useSelector((state: any) => state.auth);
   const { cartItems } = useSelector((state: any) => state.shopCart);
-  function handleAddToCart(getCurrentProductId: string, getTotalStock: number) {
+
+  function handleAddToCart(getCurrentProductId, getTotalStock) {
     const getCartItems = cartItems.items || [];
     if (getCartItems.length) {
       const indexOfCurrentItem = getCartItems.findIndex(
-        (item) => item.productId === getCurrentProductId
+        (item) => item.productId === getCurrentProductId,
       );
       if (indexOfCurrentItem > -1) {
         const getQuantity = getCartItems[indexOfCurrentItem].quantity;
@@ -33,9 +34,15 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
         userId: user?.id,
         productId: getCurrentProductId,
         quantity: 1,
-      })
-    );
+      }),
+    ).then((data) => {
+      if (data?.payload?.success) {
+        dispatch(fetchCartItems(user?.id));
+        toast("Product is added to cart");
+      }
+    });
   }
+
   function handleDialogClose() {
     setOpen(false);
     dispatch(setProductDetails());
@@ -100,7 +107,7 @@ function ProductDetailsDialog({ open, setOpen, productDetails }) {
                 onClick={() =>
                   handleAddToCart(
                     productDetails?._id,
-                    productDetails?.totalStock
+                    productDetails?.totalStock,
                   )
                 }
               >
