@@ -29,6 +29,7 @@ export default function App() {
     (state: RootState) => state.auth,
   );
   const dispatch = useDispatch();
+  console.log("user", user, "isAuth", isAuthenticated, "isLoading", isLoading);
 
   useEffect(() => {
     dispatch(checkAuth());
@@ -41,6 +42,15 @@ export default function App() {
   return (
     <div>
       <Routes>
+        <Route
+          path="/"
+          element={
+            <CheckAuth
+              isAuthenticated={isAuthenticated}
+              user={user}
+            ></CheckAuth>
+          }
+        />
         <Route
           path="auth"
           element={
