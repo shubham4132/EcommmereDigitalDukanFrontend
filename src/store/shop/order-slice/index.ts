@@ -20,6 +20,9 @@ export const createNewOrder = createAsyncThunk(
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/api/shop/order/create`,
       orderData,
+      {
+        withCredentials: true,
+      }
     );
     return response?.data;
   },
@@ -31,6 +34,9 @@ export const capturePayment = createAsyncThunk<unknown, CapturePaymentPayload>(
     const response = await axios.post(
       `${import.meta.env.VITE_API_URL}/api/shop/order/capture`,
       { paymentId, payerId, orderId },
+      {
+        withCredentials: true,
+      }
     );
     return response?.data;
   },
@@ -41,6 +47,9 @@ export const getAllOrdersByUserId = createAsyncThunk(
   async (userId) => {
     const response = await axios.get(
       `${import.meta.env.VITE_API_URL}/api/shop/order/list/${userId}`,
+      {
+        withCredentials: true,
+      }
     );
     return response?.data;
   },
@@ -50,6 +59,9 @@ export const getOrderDetails = createAsyncThunk(
   async (id) => {
     const response = await axios.get(
       `${import.meta.env.VITE_API_URL}/api/shop/order/details/${id}`,
+      {
+        withCredentials: true,
+      }
     );
     return response?.data;
   },
