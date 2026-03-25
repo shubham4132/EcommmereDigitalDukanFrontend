@@ -29,7 +29,7 @@ export const capturePayment = createAsyncThunk<unknown, CapturePaymentPayload>(
   "/order/capturePayment",
   async ({ paymentId, payerId, orderId }) => {
     const response = await axios.post(
-      `${import.meta.env.VITE_API_URL} /api/shop/order/capture`,
+      `${import.meta.env.VITE_API_URL}/api/shop/order/capture`,
       { paymentId, payerId, orderId },
     );
     return response?.data;
